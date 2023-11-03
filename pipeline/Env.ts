@@ -1,4 +1,4 @@
-import { Progress } from "@pipeline/Progress";
+import { Progress } from '@pipeline/Progress'
 
 /**
  * Interface to load assets, e.g. stopword list, models, etc.
@@ -7,16 +7,16 @@ import { Progress } from "@pipeline/Progress";
  * It must implement all three signatures
  */
 export type LoadAssetFn = {
-    <T>(filepath: string, type: "json"): Promise<T>;
-    (filepath: string, type: "text"): Promise<string>;
-    (filepath: string, type: "arraybuffer"): Promise<ArrayBuffer>;
-};
+  <T>(filepath: string, type: 'json'): Promise<T>
+  (filepath: string, type: 'text'): Promise<string>
+  (filepath: string, type: 'arraybuffer'): Promise<ArrayBuffer>
+}
 
 /** Interface required for each environment */
 export interface Env {
-    /** Required to load assets */
-    loadAsset: LoadAssetFn;
+  /** Required to load assets */
+  loadAsset: LoadAssetFn
 
-    /** Optionally provide a Progress object to receive progress callbacks */
-    progress?: Progress;
+  /** Optionally provide a Progress object to receive progress callbacks */
+  progress?: Progress
 }

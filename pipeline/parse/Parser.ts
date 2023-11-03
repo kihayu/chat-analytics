@@ -1,9 +1,9 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events'
 
-import { Progress } from "@pipeline/Progress";
-import { Timestamp } from "@pipeline/Types";
-import { FileInput } from "@pipeline/parse/File";
-import { PAuthor, PCall, PChannel, PGuild, PMessage } from "@pipeline/parse/Types";
+import { Progress } from '@pipeline/Progress'
+import { Timestamp } from '@pipeline/Types'
+import { FileInput } from '@pipeline/parse/File'
+import { PAuthor, PCall, PChannel, PGuild, PMessage } from '@pipeline/parse/Types'
 
 // prettier-ignore
 export declare interface Parser {
@@ -32,11 +32,11 @@ export declare interface Parser {
 }
 
 export abstract class Parser extends EventEmitter {
-    /**
-     * Parses the given input file. It should emit events with the parsed data.
-     *
-     * Note that this function should yield every so often (e.g. every few MBs or hundreds of messages)
-     * to process messages and report progress back to the UI.
-     */
-    abstract parse(file: FileInput, progress?: Progress): AsyncGenerator<void>;
+  /**
+   * Parses the given input file. It should emit events with the parsed data.
+   *
+   * Note that this function should yield every so often (e.g. every few MBs or hundreds of messages)
+   * to process messages and report progress back to the UI.
+   */
+  abstract parse(file: FileInput, progress?: Progress): AsyncGenerator<void>
 }

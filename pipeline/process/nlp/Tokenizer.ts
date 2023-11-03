@@ -1,4 +1,4 @@
-import emojiRegex from "emoji-regex";
+import emojiRegex from 'emoji-regex'
 
 /*
     We are currently using a simple regex-based tokenizer.
@@ -24,62 +24,62 @@ import emojiRegex from "emoji-regex";
     https://i.imgflip.com/4hkogk.jpg
 */
 
-export type Tag = "code" | "url" | "mention" | "emoji" | "custom-emoji" | "word" | "unknown";
+export type Tag = 'code' | 'url' | 'mention' | 'emoji' | 'custom-emoji' | 'word' | 'unknown'
 
 export interface Token {
-    text: string;
-    tag: Tag;
+  text: string
+  tag: Tag
 }
 
 export interface TokenMatcher {
-    /** What kind of token is being matched */
-    tag: Tag;
-    /** Regex pattern to search for this token */
-    regex: RegExp;
-    /** Optionally applies a transformation to the matched text */
-    transform?: (match: string) => string;
+  /** What kind of token is being matched */
+  tag: Tag
+  /** Regex pattern to search for this token */
+  regex: RegExp
+  /** Optionally applies a transformation to the matched text */
+  transform?: (match: string) => string
 }
 
 // the order of the matchers is critical
 const Matchers: Readonly<TokenMatcher[]> = [
-    {
-        // should we handle it this way?
-        // source code, ascii art, some other stuff should not be included
-        regex: /```[^`]*```/g,
-        tag: "code",
-    },
-    {
-        // match URLs
-        regex: /https?:\/\/[^\s<]+[^<.,:;"')\]\s]/g, // Discord's regex to match URLs
-        tag: "url",
-    },
-    // TODO: match emails, so they are not parsed as mentions (@gmail, @hotmail, etc)
-    {
-        // match @mentions
-        regex: /@[\p{L}_0-9]+/giu,
-        tag: "mention",
-        transform: (match) => match.slice(1), // remove @
-    },
-    {
-        // match emojis 🔥
-        regex: emojiRegex(),
-        tag: "emoji",
-    },
-    {
-        // match custom emojis :pepe:
-        regex: /:\w+:/gi,
-        tag: "custom-emoji",
-        transform: (match) => match.slice(1, -1), // remove :
-    },
-    // TODO: match words on languages that words are one character (help wanted)
-    // See: https://github.com/facebookresearch/fastText/blob/master/docs/crawl-vectors.md#tokenization
-    {
-        // match words
-        // words can have numbers (k8s, i18n, etc) (is this a mistake?)
-        regex: /(?:\p{L}[\p{L}'0-9-]*[\p{L}0-9])|\p{L}/giu,
-        tag: "word",
-    },
-];
+  {
+    // should we handle it this way?
+    // source code, ascii art, some other stuff should not be included
+    regex: /```[^`]*```/g,
+    tag: 'code',
+  },
+  {
+    // match URLs
+    regex: /https?:\/\/[^\s<]+[^<.,:;"')\]\s]/g, // Discord's regex to match URLs
+    tag: 'url',
+  },
+  // TODO: match emails, so they are not parsed as mentions (@gmail, @hotmail, etc)
+  {
+    // match @mentions
+    regex: /@[\p{L}_0-9]+/giu,
+    tag: 'mention',
+    transform: (match) => match.slice(1), // remove @
+  },
+  {
+    // match emojis 🔥
+    regex: emojiRegex(),
+    tag: 'emoji',
+  },
+  {
+    // match custom emojis :pepe:
+    regex: /:\w+:/gi,
+    tag: 'custom-emoji',
+    transform: (match) => match.slice(1, -1), // remove :
+  },
+  // TODO: match words on languages that words are one character (help wanted)
+  // See: https://github.com/facebookresearch/fastText/blob/master/docs/crawl-vectors.md#tokenization
+  {
+    // match words
+    // words can have numbers (k8s, i18n, etc) (is this a mistake?)
+    regex: /(?:\p{L}[\p{L}'0-9-]*[\p{L}0-9])|\p{L}/giu,
+    tag: 'word',
+  },
+]
 
 /**
  * Splits the input string using one TokenMatcher into a list of strings and tokens where:
@@ -92,28 +92,28 @@ const Matchers: Readonly<TokenMatcher[]> = [
  * > "notemoji 😃 notemoji" -> ["notemoji", { ..."😃" }, "notemoji"]
  */
 export const splitByToken = (input: string, matcher: TokenMatcher): (string | Token)[] => {
-    const result: (string | Token)[] = [];
+  const result: (string | Token)[] = []
 
-    const matches = input.match(matcher.regex);
-    const remaining = input.split(matcher.regex);
+  const matches = input.match(matcher.regex)
+  const remaining = input.split(matcher.regex)
 
-    // interleave the matched and unmatched
-    for (let i = 0; i < remaining.length; i++) {
-        // unmatched string
-        const unmatched = remaining[i].trim();
-        if (unmatched.length > 0) result.push(unmatched);
+  // interleave the matched and unmatched
+  for (let i = 0; i < remaining.length; i++) {
+    // unmatched string
+    const unmatched = remaining[i].trim()
+    if (unmatched.length > 0) result.push(unmatched)
 
-        // matched token
-        if (matches && i < matches.length) {
-            result.push({
-                text: matcher.transform ? matcher.transform(matches[i]) : matches[i],
-                tag: matcher.tag,
-            });
-        }
+    // matched token
+    if (matches && i < matches.length) {
+      result.push({
+        text: matcher.transform ? matcher.transform(matches[i]) : matches[i],
+        tag: matcher.tag,
+      })
     }
+  }
 
-    return result;
-};
+  return result
+}
 
 /**
  * Tokenizes a string recursively.
@@ -123,28 +123,28 @@ export const splitByToken = (input: string, matcher: TokenMatcher): (string | To
  * @param matcherIndex the index of the matcher to use in the Matchers array
  */
 export const tokenizeStep = (input: string, matcherIndex: number): Token[] => {
-    if (matcherIndex >= Matchers.length) {
-        // no more matchers to try, mark as unknown
-        return [{ text: input, tag: "unknown" }];
+  if (matcherIndex >= Matchers.length) {
+    // no more matchers to try, mark as unknown
+    return [{ text: input, tag: 'unknown' }]
+  }
+
+  const result: Token[] = []
+
+  // split input by the matcher
+  const list = splitByToken(input, Matchers[matcherIndex])
+  // now recursively tokenize with the remaining matchers
+  // when the element is a string (aka unmatched)
+  for (const elem of list) {
+    if (typeof elem === 'string') {
+      // continue tokenizing
+      result.push(...tokenizeStep(elem, matcherIndex + 1))
+    } else {
+      result.push(elem)
     }
+  }
 
-    const result: Token[] = [];
-
-    // split input by the matcher
-    const list = splitByToken(input, Matchers[matcherIndex]);
-    // now recursively tokenize with the remaining matchers
-    // when the element is a string (aka unmatched)
-    for (const elem of list) {
-        if (typeof elem === "string") {
-            // continue tokenizing
-            result.push(...tokenizeStep(elem, matcherIndex + 1));
-        } else {
-            result.push(elem);
-        }
-    }
-
-    return result;
-};
+  return result
+}
 
 /** Tokenizes a string into a list of tokens */
-export const tokenize = (input: string): Token[] => tokenizeStep(input, 0);
+export const tokenize = (input: string): Token[] => tokenizeStep(input, 0)

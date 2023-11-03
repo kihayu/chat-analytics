@@ -1,15 +1,15 @@
-import { DiscordParser } from "@pipeline/parse/parsers/DiscordParser";
+import { DiscordParser } from '@pipeline/parse/parsers/DiscordParser'
 
-import { runParserFromString } from "@tests/parse/Parse";
+import { runParserFromString } from '@tests/parse/Parse'
 
-it("should crash if the guild information is not present before the channel", async () => {
-    await expect(runParserFromString(DiscordParser, [`{ "channel": {} }`])).rejects.toThrow("Missing guild ID");
-});
+it('should crash if the guild information is not present before the channel', async () => {
+  await expect(runParserFromString(DiscordParser, [`{ "channel": {} }`])).rejects.toThrow('Missing guild ID')
+})
 
-it("should crash if the channel information is not present before messages", async () => {
-    await expect(
-        runParserFromString(DiscordParser, [
-            `
+it('should crash if the channel information is not present before messages', async () => {
+  await expect(
+    runParserFromString(DiscordParser, [
+      `
     { 
         "guild": {
             "id": "0",
@@ -18,6 +18,6 @@ it("should crash if the channel information is not present before messages", asy
         },
         "messages": [{},{},{}]
     }`,
-        ])
-    ).rejects.toThrow("Missing channel ID");
-});
+    ]),
+  ).rejects.toThrow('Missing channel ID')
+})

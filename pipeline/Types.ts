@@ -1,10 +1,10 @@
-import { Platform } from "@pipeline/Platforms";
+import { Platform } from '@pipeline/Platforms'
 
 /** A zero based index */
-export type Index = number;
+export type Index = number
 
 /** UTC timestamp */
-export type Timestamp = number;
+export type Timestamp = number
 
 /**
  * Type of channel
@@ -13,13 +13,13 @@ export type Timestamp = number;
  * - group: direct message between MORE THAN TWO users
  * - text: generic text channel
  */
-export type ChannelType = "dm" | "group" | "text";
+export type ChannelType = 'dm' | 'group' | 'text'
 
 /** Configuration for database and report generation */
 export interface Config {
-    /** Target platform */
-    platform: Platform;
+  /** Target platform */
+  platform: Platform
 
-    /** Wether this report should be marked as a demo */
-    demo?: boolean;
+  /** Wether this report should be marked as a demo */
+  demo?: boolean
 }
